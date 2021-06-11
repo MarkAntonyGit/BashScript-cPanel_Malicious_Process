@@ -23,27 +23,26 @@ printf  "\e[1;32m ----------------------------------Created By Mark Antony------
 printf  "\e[1;32m ---------------------------------------Version 3---------------------------------------------------  \e[1;m"
 echo
 #To get the usernames
-ps auwx | grep -vE '^root' | grep -E '[0-9]{1,4}:[0-9]{1,2}\ (\.\/|\/tmp|\/var\/tmp|perl \/tmp|(sh\ \-c){0,1}\ \.\/[a-zA-Z0-9]*|(bash|proc)|\[stealth\])' | awk '{print $1}' | sort | uniq > /usr/local/src/Baduser.txt
+ps auwx | grep -vE '^root' | grep -E '[0-9]{1,4}:[0-9]{1,2}\ (\.\/|\/tmp|\/var\/tmp|perl \/tmp|(sh\ \-c){0,1}\ \.\/[a-zA-Z0-9]*|(bash|proc)|\[stealth\])' | awk '{print $1}' | sort | uniq > /usr/local/src/BashScript-cPanel_Malicious_Process/Baduser.txt
 procCount=`ps auwx | grep -vE '^root' | grep -E '[0-9]{1,4}:[0-9]{1,2}\ (\.\/|\/tmp|\/var\/tmp|perl \/tmp|(sh\ \-c){0,1}\ \.\/[a-zA-Z0-9]*|(bash|proc)|\[stealth\])' | awk '{print $1}' | sort | uniq | wc -l`
 
-#/opt/zabbix_scripts/malicious.userProcs.sh > /usr/local/src/Baduser.txt
 if [ ${procCount} -eq 0 ] ; then
         echo;  printf  "\e[1;34mNo Malicious Processes Found\e[1;m"; echo
 else
-echo > /usr/local/src/Baduserlist.txt
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt
 #For getting exact usernames and storing it to a file
-for i in `cat /usr/local/src/Baduser.txt`; do ls -alh /var/cpanel/users/ | grep $i | awk '{print $9}' | cut -d\/ -f5 >> /usr/local/src/Baduserlist.txt; done
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/Baduser.txt`; do ls -alh /var/cpanel/users/ | grep $i | awk '{print $9}' | cut -d\/ -f5 >> /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt; done
 #Declaring arrays to find malicious files
 declare arrayOfArraysVariant1="(\\\$[a-z0-9]{1,}\['[a-zA-Z0-9]{1,}'\]\[[0-9]{1,2}\]\\.){5,}"
 declare arrayOfArraysVariant2="(\\\$[a-z0-9]{1,}\[\]\s=\s(\\\$[a-z0-9]{1,}\[[0-9]{1,}\](\.|;)){3,})"
 echo; printf  "\e[1;31mMalicious Process User(s)" ; printf "\n-------------------------\e[1;m" ; echo 
-cat /usr/local/src/Baduserlist.txt
-echo > /usr/local/src/CWD
-echo > /usr/local/src/PID
-echo > /usr/local/src/DocRoots
-echo > /usr/local/src/DocRootsDisk
-echo > /usr/local/src/malicious_files1.txt
-echo > /usr/local/src/malicious_files2.txt
+cat /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/CWD
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/PID
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/DocRoots
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/DocRootsDisk
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt
+echo > /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt
 #The following lines are for checking the load of the server and to abort script if load is above 5.
 u=$(cat /proc/loadavg | awk {'print $1'})
 Ur=$(printf "%.0f\n" $u)
@@ -52,12 +51,12 @@ if [[ "$Ur" -gt 5 ]] ; then
      printf  "\e[1;34mCurrent load is"; printf " $Ur."; printf " Reduce load below 5 and try again!\e[1;m" ; echo
 else
 #The following lines was used to find the exact culprit file for the malicious process. (Not needed for new version if it is a small account)
-for i in `cat /usr/local/src/Baduserlist.txt`; do ps aux | grep $i | grep cron.php | awk {'print $2'} >>/usr/local/src/PID;done
-for i in `cat /usr/local/src/PID`; do lsof -p $i| grep cwd | awk {'print $9'} >> /usr/local/src/CWD ; done
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt`; do ps aux | grep $i | grep cron.php | awk {'print $2'} >>/usr/local/src/BashScript-cPanel_Malicious_Process/PID;done
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/PID`; do lsof -p $i| grep cwd | awk {'print $9'} >> /usr/local/src/BashScript-cPanel_Malicious_Process/CWD ; done
 #The following lines are for storing the document roots inside the user(s) to a file and checking its total disk space.
-for i in `cat /usr/local/src/Baduserlist.txt`; do grep $i /etc/userdatadomains | cut -d "=" -f9| sort -u | grep -v public_html/ >> /usr/local/src/DocRoots; done
-for i in `cat /usr/local/src/DocRoots`; do du -sc $i | grep -v total |awk {'print $1'} >>/usr/local/src/DocRootsDisk; done
-Total=$(awk '{sum= sum+$1} END {print sum/1000000}' /usr/local/src/DocRootsDisk)
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt`; do grep $i /etc/userdatadomains | cut -d "=" -f9| sort -u | grep -v public_html/ >> /usr/local/src/BashScript-cPanel_Malicious_Process/DocRoots; done
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/DocRoots`; do du -sc $i | grep -v total |awk {'print $1'} >>/usr/local/src/BashScript-cPanel_Malicious_Process/DocRootsDisk; done
+Total=$(awk '{sum= sum+$1} END {print sum/1000000}' /usr/local/src/BashScript-cPanel_Malicious_Process/DocRootsDisk)
 TotalR=$(printf "%.0f\n" $Total)
 #Creating two functions to scan the accounts according to the disk usage of accounts.
 scanfull(){
@@ -69,34 +68,34 @@ for s in / - \\ \|; do echo -ne "\r $s";sleep 1;done
 done &
 bgid=$!
 #End spinner
-for i in `cat /usr/local/src/DocRoots`;
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/DocRoots`;
         do 
-                grep -rP $arrayOfArraysVariant1 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/malicious_files1.txt; 
-                for i in `cat /usr/local/src/malicious_files1.txt`;do sed -i '1s/.*/<?php/' $i ;done
+                grep -rP $arrayOfArraysVariant1 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt; 
+                for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt`;do sed -i '1s/.*/<?php/' $i ;done
         done
-for i in `cat /usr/local/src/DocRoots`;
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/DocRoots`;
         do 
-                grep -rP $arrayOfArraysVariant2 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/malicious_files2.txt; 
-                for i in `cat /usr/local/src/malicious_files2.txt`;do rm -f $i ; done
+                grep -rP $arrayOfArraysVariant2 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt; 
+                for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt`;do rm -f $i ; done
         done
 kill -13 "$bgid"
 echo; printf  "\e[1;31mMalicious Files Handled"; printf "\n-----------------------\e[1;m"
-cat /usr/local/src/malicious_files1.txt /usr/local/src/malicious_files2.txt; echo
+cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt; echo
 }
 #function to find the culprit file for the malicious process
 scanCWD(){
-for i in `cat /usr/local/src/CWD`; 
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/CWD`; 
 	do 
-		grep -rP $arrayOfArraysVariant1 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/malicious_files1.txt; 
-		for i in `cat /usr/local/src/malicious_files1.txt`;do sed -i '1s/.*/<?php/' $i ;done
+		grep -rP $arrayOfArraysVariant1 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt; 
+		for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt`;do sed -i '1s/.*/<?php/' $i ;done
 	done
-for i in `cat /usr/local/src/CWD`; 
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/CWD`; 
 	do 
-		grep -rP $arrayOfArraysVariant2 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/malicious_files2.txt; 
-		for i in `cat /usr/local/src/malicious_files2.txt`;do rm -f $i ; done
+		grep -rP $arrayOfArraysVariant2 $i | cut -d: -f1 | sort | uniq >> /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt; 
+		for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt`;do rm -f $i ; done
 	done		
 echo; printf  "\e[1;31mCulprit file(s) causing the process"; printf "\n-----------------------------------\e[1;m" 
-cat /usr/local/src/malicious_files1.txt /usr/local/src/malicious_files2.txt; echo
+cat /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files1.txt /usr/local/src/BashScript-cPanel_Malicious_Process/malicious_files2.txt; echo
 }
 #get confirmation
 if [[ "$TotalR" -gt 8 ]] ; then
@@ -110,7 +109,7 @@ else
 scanfull
 fi
 #Kill the process for the malicious user.
-for i in `cat /usr/local/src/Baduserlist.txt`; do pkill -9 -u $i; done
+for i in `cat /usr/local/src/BashScript-cPanel_Malicious_Process/Baduserlist.txt`; do pkill -9 -u $i; done
 echo; printf  "\e[1;32mAll malicious process are terminated. Do scan the user(s) for cleaning the account completely\e[1;m"; echo
 fi
 fi 
