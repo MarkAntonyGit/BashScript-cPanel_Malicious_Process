@@ -40,6 +40,8 @@ Please use the following steps to use this script,
 
 ### Connect with Me
 
+-------- Mark Antony ------------------------------------------------------------------------------------------------------------------------------- <a href="mailto:markantony.alenchery@gmail.com"><img src="https://img.shields.io/badge/-markantony.alenchery@gmail.com-D14836?style=flat&logo=Gmail&logoColor=white"/></a> ------------------------------------------------------------------------------------------------------- <a href="https://www.linkedin.com/in/mark-antony-345473211https://www.linkedin.com/in/mark-antony-345473211"><img src="https://img.shields.io/badge/-Linkedin-blue"/></a> ----------------------------------------------------
+
 <p align="center">
 <a href="mailto:markantony.alenchery@gmail.com"><img src="https://img.shields.io/badge/-markantony.alenchery@gmail.com-D14836?style=flat&logo=Gmail&logoColor=white"/></a>
 <a href="https://www.linkedin.com/in/mark-antony-345473211https://www.linkedin.com/in/mark-antony-345473211"><img src="https://img.shields.io/badge/-Linkedin-blue"/></a>
